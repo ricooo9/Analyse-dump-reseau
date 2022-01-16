@@ -27,6 +27,7 @@ flag=[]
 numack=[]
 numwin=[]
 numseq=[]
+request=[]
 compteurp = 0
 compteurpoint = 0
 compteurs = 0
@@ -71,17 +72,24 @@ for line in file:
                 split2=a.split(",")
                 numwin.append(split2[0])
         if "seq" in line :
-            split=line.split(" ")
-            a=split[8]
-            split2=a.split(",")
-            numseq.append(split2[0])
+            if "ICMP" in line:
+                numseq.append(" ")
+            else:
+                split=line.split(" ")
+                a=split[8]
+                split2=a.split(",")
+                numseq.append(split2[0])
         else:
             numseq.append(" ")
-    if "ICMP" in line:
-        if "request" in line:
-            compteurrequest += 1
-        if "reply" in line:
-            compteurreply += 1
+        if "ICMP" in line:
+            if "request" in line:
+                compteurrequest += 1
+                request.append("Echo request")
+            if "reply" in line:
+                compteurreply += 1
+                request.append("Echo reply")
+        else:
+            request.append(" ")
     if "length" in line:
         split = line.split(" ")
         if "HTTP" in line:
@@ -97,27 +105,44 @@ for line in file:
 
 ipsource2 = []
 ipdesti2 = []
+ipdestifinale=[]
 
 for i in ipsource:
-    ports = i.split(".")
-    del ports[-1]
-    delim = "."
-    delim = delim.join(ports)
-    ipsource2.append(delim)
+    if not "." in i:
+        ipsource2.append(i)
+    elif "ssh" in i or len(i) > 15 or "B" in i:
+        ports = i.split(".")
+        del ports[-1]
+        delim = "."
+        delim = delim.join(ports)
+        ipsource2.append(delim)
+    else:
+        ipsource2.append(i)
 for j in ipdesti:
-    ports = j.split(".")
-    del ports[-1]
-    delim = "."
-    delim = delim.join(ports)
-    ipdesti2.append(delim)
+    if not "." in j:
+        ipdesti2.append(j)
+    elif "ssh" in j or len(j) > 15 or "B" in j:
+        ports = j.split(".")
+        del ports[-1]
+        delim = "."
+        delim = delim.join(ports)
+        ipdesti2.append(delim)
+    else:
+        ipdesti2.append(j)
 
+for l in ipdesti2:
+    if not ":" in l:
+        ipdestifinale.append(l)
+    else:
+        deuxp = l.split(":")
+        ipdestifinale.append(deuxp[0])
 
 def compteurip(liste):
     return {k: liste.count(k) for k in liste}
 
 
 somme = compteurip(ipsource2)
-somme2 = compteurip(ipdesti2)
+somme2 = compteurip(ipdestifinale)
 
 texte = """<html
 
@@ -377,8 +402,8 @@ compteurtrame=[compteurtrame]
 
 with open('C:/Users/33763/Desktop/donnees.csv', 'w', newline='') as fichiercsv:
     writer = csv.writer(fichiercsv)
-    writer.writerow(['IP source', 'IP destination', 'Length', 'Flag', 'Numéro ACK', 'Numéro WIN', 'Numéro seq'])
-    writer.writerows(zip(ipsource2, ipdesti2, length, flag, numack, numwin, numseq))
+    writer.writerow(['IP source', 'IP destination', 'Length', 'Flag', 'Numéro ACK', 'Numéro WIN', 'Numéro seq', 'ICMP Request/Reply'])
+    writer.writerows(zip(ipsource2, ipdestifinale, length, flag, numack, numwin, numseq, request))
     fichiercsv.close()
 
 with open('C:/Users/33763/Desktop/statistiques.csv', 'w', newline='') as stat:
