@@ -1,10 +1,10 @@
 import csv
 import matplotlib.pyplot as plt
 
-#on ouvre le fichier txt en spécifiant le chemin de celui-ci
+#we open the txt file by specifying its path
 file = open('C:/Users/33763/Desktop/Fichier_a_traiter.txt', "r")
-#on va initialiser nos listes en les mettant vide pour y ajouter par la suite
-#les infos que l'on souhaite classer
+#we will initialize our lists by putting them empty to add what informations we want to them later
+
 ipsource = []
 ipdesti = []
 length = []
@@ -13,18 +13,20 @@ numack=[]
 numwin=[]
 numseq=[]
 request=[]
-#on va initialiser des compteurs pour avoir des statistiques
+sourcerequest=[]
+destireply=[]
+#we will initialize our counters to have statistics
 compteurp = 0
 compteurpoint = 0
 compteurs = 0
 compteurrequest = 0
 compteurreply = 0
 compteurtrame = 0
-#on va supprimer les parties hexadécimales des trames pour plus de simplicité
-#pour ça on va chercher ligne par ligne où IP est contenu dans la ligne
-#on ajoutera à chaque compteur (de trames, de flag etc...) +1 lorsqu'on en détectera un
-#on va également ajouter dans nos tableaux les IP sources-destinations
-#on va aussi enlever les "," ou ";" qui pourrait être à la fin de nos infos de sorte à faciliter le compteur
+#we will remove the hexadecimal parts of the frames for more simplicity
+#for that we will search line by line where IP is contained in the line
+#we will add to each counter (of frames, of flag etc...) +1 when we detect one
+#we will also add in our lists the source-destination IPs
+#we will also remove the "," or ";" which could be at the end of our infos so as to facilitate the counter
 for line in file:
     if "IP" in line:
         compteurtrame += 1
@@ -74,11 +76,18 @@ for line in file:
             numseq.append(" ")
         if "ICMP" in line:
             if "request" in line:
+                split=line.split(" ")
                 compteurrequest += 1
                 request.append("Echo request")
+                sourcerequest.append(split[2])
+                a=split[4]
+                split2=a.split(":")
+                destireply.append(split2[0])
             if "reply" in line:
+                split=line.split(" ")
                 compteurreply += 1
                 request.append("Echo reply")
+                
         else:
             request.append(" ")
     if "length" in line:
@@ -94,11 +103,16 @@ for line in file:
         ipsource.append(split[2])
         ipdesti.append(split[4])
 
-#on va créer des tableaux vides pour faire un 2ème tri et enlever les ports à la fin
+#we will create empty arrays to do a 2nd sort and remove the ports at the end
+
 ipsource2 = []
 ipdesti2 = []
 ipdestifinale=[]
-#on passe à la suppresion des ports ou des éléments inutiles en fin d'adresse IP
+machine=str(sourcerequest[0])
+machine2=str(destireply[0])
+
+#we move on to the deletion of ports or unnecessary elements at the end of the IP address (source and destination)
+
 for i in ipsource:
     if not "." in i:
         ipsource2.append(i)
@@ -129,15 +143,18 @@ for l in ipdesti2:
         deuxp = l.split(":")
         ipdestifinale.append(deuxp[0])
 
-#fonction permettant de compter le nombre de fois qu'un élément apparaît et afficher l'élément en question
-#le tout est contenu dans un dictionnaire
+
+#function to count the number of times an element appears and display the element in question
+#everything is contained in a dictionary
 def compteurip(liste):
     return {k: liste.count(k) for k in liste}
 
-#on met ces compteurs pour les adresse IP source dans la variable somme
-#même chose dans la variable somme2
+#we put these counters for the source IP addresses in the sum variable
+#same thing in the somme2 variable
 somme = compteurip(ipsource2)
 somme2 = compteurip(ipdestifinale)
+
+#creation of percentage values ​​for use them in graphs, for flags as well as request/reply
 
 sommedescompteurs=compteurp+compteurs+compteurpoint
 compt1=compteurp/sommedescompteurs
@@ -148,26 +165,30 @@ sommereplyrequest=compteurreply+compteurrequest
 compt4=compteurrequest/sommereplyrequest
 compt5=compteurreply/sommereplyrequest
 
-
+#creating the first graphic and saving it in png format
 name = ['Flag [P.]', 'Flag [S]', 'Flag[.]']
 data = [compt1, compt2, compt3]
+colors = ['#00FF00','#FF2400','#0000FF']
 
-
-plt.pie(data, labels=name, autopct='%1.1f%%', startangle=90, shadow=True)
+plt.pie(data, labels=name, autopct='%1.1f%%', startangle=90, shadow=True, colors=colors)
 plt.savefig("C:/Users/33763/Desktop/graphique.png")
 plt.show()
 
+#creation of the second graph and saving it in png format
+
 name2 = ['ICMP echo Request', 'ICMP echo Reply']
 data2 = [compt4, compt5]
+colors = ['#FF2400','#0000FF']
 
-plt.pie(data2, labels=name2, autopct='%1.1f%%', startangle=90, shadow=True)
+plt.pie(data2, labels=name2, autopct='%1.1f%%', startangle=90, shadow=True, colors=colors)
 plt.savefig("C:/Users/33763/Desktop/graphique2.png")
 plt.show()
 
-#création d'une page web dans une variable, on l'appellera ensuite pour écrire le contenu de cette variable
-#dans notre page web
-texte = """<html
 
+#creation of a web page in a variable, we will then call it to write the content of this variable
+#in our webpage
+#we will also use variables that we already have such as flag counters etc...
+texte = """<html
 <head>
 
 <center> <h1>Informations sur le fichier</h1> </center>
@@ -176,25 +197,32 @@ texte = """<html
 <center><table>
    <tr>
        <td>Trames dans ce fichier : </td>
-       <td bgcolor="E8DADA"> %s </td>
+       <td bgcolor="F9D995"> %s </td>
    </tr>
 </table>
 </center>
 <br>
 <center> <h2>Fréquences des flags</h2> </center>
 <center><img src="C:/Users/33763/Desktop/graphique.png"></center>
+<center> <h4> Signification des différents Flags </h4> </center>
+<center><B><p> "S"  ->  SYN&nbsp&nbsp
+            "F"  ->  FIN&nbsp&nbsp
+            "."  ->  ACK&nbsp&nbsp
+            "P"  ->  PUSH&nbsp&nbsp
+            "R"  ->  STOP&nbsp&nbsp
+</p></B></center>
 <center><table>
    <tr>
        <td>Flag [P.]: </td>
-       <td bgcolor="E8DADA"> %s fois </td>
+       <td bgcolor="F9D995"> %s fois </td>
    </tr>
    <tr>
        <td>Flag [.]: </td> 
-       <td bgcolor="E8DADA"> %s fois </td>
+       <td bgcolor="F9D995"> %s fois </td>
    </tr>
    <tr>
        <td>Flag [S]: </td>
-       <td bgcolor="E8DADA"> %s fois </td>
+       <td bgcolor="F9D995"> %s fois </td>
    </tr>
 </table>
 </center>
@@ -204,13 +232,25 @@ texte = """<html
 <center><table>
    <tr>
        <td>Request : </td>
-       <td bgcolor="E8DADA"> %s fois </td>
+       <td bgcolor="F9D995"> %s fois </td>
    </tr>
+   <br>
+   <tr>
+       <td>Adresse source : </td>
+       <td bgcolor="FD7F65"> %s </td>
+   </tr>
+</table></center>
+<br>
+<center>
+<table>
    <tr>
        <td>Reply : </td> 
-       <td bgcolor="E8DADA"> %s fois </td>
+       <td bgcolor="F9D995"> %s fois </td>
    </tr>
    <tr>
+       <td>Adresse destination : </td>
+       <td bgcolor="FD7F65"> %s </td>
+   </tr>
 </table>
 </center>
 <br>
@@ -219,14 +259,8 @@ texte = """<html
 <center>
 <table border="0">
 <tr><td>
-<table border="1" width="20" height="5" style="background-color:#BBB23B; border-collapse:collapse"><tr><td>&nbsp;</td></tr></table>
-<td><span> Fréquence inférieur à 100 &nbsp&nbsp&nbsp</span></td>
-</tr>
-</table>
-<table border="0">
-<tr><td>
 <table border="1" width="20" height="5" style="background-color:blue; border-collapse:collapse"><tr><td>&nbsp;</td></tr></table>
-<td><span>Fréquence > ou égal à 100 &nbsp</span></td>
+<td><span>Fréquence > ou égal à 200 &nbsp</span></td>
 </tr>
 </table>
 <table border="0">
@@ -255,15 +289,16 @@ texte = """<html
 </table>
 </center>
 <br><br>
-<center> <h3> Fréquences des adresses IP sources </h3> </center>
+<center> <h3> Fréquences des IP sources les plus élevées </h3> </center>
 <br>
 <center>
 </head>
-</html>""" % (compteurtrame, compteurp, compteurpoint, compteurs, compteurrequest, compteurreply)
+</body>
+</html>""" % (compteurtrame, compteurp, compteurpoint, compteurs, compteurrequest,machine, compteurreply, machine2)
 
 
-#on va créer la page web si elle n'existe pas 
-#on va récupérer des valeurs de notre dictionnaire (les IP et leur nombre)
+#we will create the web page if it does not exist
+#we will take values ​​from our dictionary (the IPs and their number)
 c = open('C:/Users/33763/Desktop/page.html', 'w')
 c.write(texte)
 a = somme.keys()
@@ -272,28 +307,19 @@ aa = somme2.keys()
 bb = somme2.values()
 vide = []
 
-#création d'une colonne vide afin de faciliter l'aspect visuel de notre excel
+#creation of an empty column in order to facilitate the visual aspect of our excel
 
 for nombre in a:
     vide.append("              |")
 compteurdip = 0
 
-#écriture de nos adresses sources ainsi que leur fréquence dans la page web 
+#writing of our source addresses as well as their frequency in the web page
+#we're going to put some color to highlight their frequency and space them out to make it clearer
+#the color will be according to the color code defined just above in our HTML text variable
 
 for y, z in zip(a, b):
     if compteurdip < 4:
-        if z < 100:
-            c.write(str(y))
-            c.write(" : ")
-            c.write("<b>")
-            c.write("<font color=")
-            c.write("#BBB23B>")
-            c.write(str(z))
-            c.write("</font>")
-            c.write("</b>")
-            c.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
-            compteurdip += 1
-        elif 100 <= z < 500:
+        if 200 <= z < 500:
             c.write(str(y))
             c.write(" : ")
             c.write("<b>")
@@ -351,24 +377,16 @@ for y, z in zip(a, b):
     if compteurdip == 4:
         c.write("<br><br>")
         compteurdip = 0
-c.write("<center> <h3> Fréquences des adresse IP destination </h3> </center> <br>")
+c.write("<center> <h3> Fréquences des IP destination les plus élévées </h3> </center> <br>")
 compteurdip=0
 
-#écriture dans notre fichier HTML des adresses ip destination et leur fréquence
+#writing in our HTML file of destination ip addresses and their frequency
+#we're going to put some color to highlight their frequency and space them out to make it clearer
+#the color will be according to the color code defined just above in our HTML text variable
+
 for yy, zz in zip(aa, bb):
     if compteurdip < 4:
-        if zz < 100:
-            c.write(str(yy))
-            c.write(" : ")
-            c.write("<b>")
-            c.write("<font color=")
-            c.write("#BBB23B>")
-            c.write(str(zz))
-            c.write("</font>")
-            c.write("</b>")
-            c.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
-            compteurdip += 1
-        elif 100 <= zz < 500:
+        if 200 <= zz < 500:
             c.write(str(yy))
             c.write(" : ")
             c.write("<b>")
@@ -426,10 +444,11 @@ for yy, zz in zip(aa, bb):
     if compteurdip == 4:
         c.write("<br><br>")
         compteurdip = 0
+c.write("<br><br>")
 c.close()
 
 
-#on transforme nos compteurs en liste de sorte à être utilisées dans le fichier excel
+#we transform our counters into a list so that they can be used in the excel file
 compteurp = [compteurp]
 compteurpoint = [compteurpoint]
 compteurs = [compteurs]
@@ -437,14 +456,14 @@ compteurrequest = [compteurrequest]
 compteurreply = [compteurreply]
 compteurtrame=[compteurtrame]
 
-#écriture des données du fichier txt dans un premier fichier csv(excel)
+#write data from txt file to a first csv file (excel)
 with open('C:/Users/33763/Desktop/donnees.csv', 'w', newline='') as fichiercsv:
     writer = csv.writer(fichiercsv)
     writer.writerow(['IP source', 'IP destination', 'Length', 'Flag', 'Numéro ACK', 'Numéro WIN', 'Numéro seq', 'ICMP Request/Reply'])
     writer.writerows(zip(ipsource2, ipdestifinale, length, flag, numack, numwin, numseq, request))
     fichiercsv.close()
 
-#écriture des statistiques dans un second fichier csv (excel)
+#write statistics to a second csv file (excel)
 with open('C:/Users/33763/Desktop/statistiques.csv', 'w', newline='') as stat:
     writer = csv.writer(stat)
     writer.writerow(['Nombre Flag [P.]', 'Nombre Flag [.]', 'Nombre Flag [S]', 'Compteur de request', 'Compteur de reply', 'Nombre de trames'])
