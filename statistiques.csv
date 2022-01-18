@@ -1,0 +1,43 @@
+Nombre Flag [P.],Nombre Flag [.],Nombre Flag [S],Compteur de request,Compteur de reply,Nombre de trames
+1673,6961,2046,42,42,11016
+ 
+ 
+Adresse IP Source ,Fréquence,              |,Adresse IP Destination,Fréquence
+BP-Linux8,3093,              |,192.168.190.130,60
+192.168.190.130,66,              |,BP-Linux8,5923
+ns1.lan.rt,83,              |,ns1.lan.rt,83
+190-0-175-100.gba.solunet.com.ar,2000,              |,184.107.43.74,2000
+par21s05-in-f131.1e100.net,27,              |,par21s05-in-f131.1e100.net,39
+82.221.107.34.bc.googleusercontent.com,5,              |,82.221.107.34.bc.googleusercontent.com,6
+201.181.244.35.bc.googleusercontent.com,14,              |,201.181.244.35.bc.googleusercontent.com,16
+93.184.220.29,6,              |,93.184.220.29,6
+server-54-230-114-7.mrs52.r.cloudfront.net,5,              |,server-54-230-114-7.mrs52.r.cloudfront.net,5
+ec2-35-166-112-194.us-west-2.compute.amazonaws.com,2,              |,ec2-35-166-112-194.us-west-2.compute.amazonaws.com,2
+192.168.115.1,42,              |,192.168.115.1,42
+server-54-230-114-73.mrs52.r.cloudfront.net,5,              |,server-54-230-114-73.mrs52.r.cloudfront.net,5
+ec2-34-211-70-226.us-west-2.compute.amazonaws.com,2,              |,ec2-34-211-70-226.us-west-2.compute.amazonaws.com,2
+server-54-230-114-122.mrs52.r.cloudfront.net,2,              |,server-54-230-114-122.mrs52.r.cloudfront.net,2
+par21s04-in-f4.1e100.net,223,              |,par21s04-in-f4.1e100.net,79
+par10s38-in-f3.1e100.net,827,              |,par10s38-in-f3.1e100.net,255
+par21s23-in-f3.1e100.net,251,              |,par21s23-in-f3.1e100.net,200
+par21s20-in-f2.1e100.net,10,              |,par21s20-in-f2.1e100.net,6
+par21s23-in-f2.1e100.net,8,              |,par21s23-in-f2.1e100.net,5
+lhr25s01-in-f2.1e100.net,10,              |,lhr25s01-in-f2.1e100.net,6
+par21s11-in-f14.1e100.net,22,              |,par21s11-in-f14.1e100.net,17
+par21s17-in-f1.1e100.net,180,              |,par21s17-in-f1.1e100.net,176
+par21s22-in-f14.1e100.net,2,              |,par21s22-in-f14.1e100.net,2
+mad01s26-in-f174.1e100.net,2,              |,mad01s26-in-f174.1e100.net,2
+par10s40-in-f14.1e100.net,2,              |,par10s40-in-f14.1e100.net,2
+par21s12-in-f14.1e100.net,2,              |,par21s12-in-f14.1e100.net,2
+par21s18-in-f3.1e100.net,19,              |,par21s18-in-f3.1e100.net,16
+par10s40-in-f3.1e100.net,21,              |,par10s40-in-f3.1e100.net,17
+mauves.univ-st-etienne.fr,1687,              |,mauves.univ-st-etienne.fr,751
+par21s11-in-f10.1e100.net,28,              |,par21s11-in-f10.1e100.net,25
+par10s28-in-f14.1e100.net,2,              |,par10s28-in-f14.1e100.net,2
+par21s20-in-f14.1e100.net,46,              |,par21s20-in-f14.1e100.net,53
+www.aggloroanne.fr,2130,              |,www.aggloroanne.fr,1022
+par21s17-in-f14.1e100.net,50,              |,par21s17-in-f14.1e100.net,56
+par21s23-in-f10.1e100.net,99,              |,par21s23-in-f10.1e100.net,85
+91.121.37.244,24,              |,91.121.37.244,27
+104.18.31.182,3,              |,104.18.31.182,4
+par21s20-in-f10.1e100.net,16,              |,par21s20-in-f10.1e100.net,15
